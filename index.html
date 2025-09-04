@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1, user-scaleable=no">
+    <title>Live Age Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f8ff;
+            text-align: center;
+            padding: 30px;
+            user-select: none;
+            
+        }
+
+        h1 {
+            color: #1e90ff; /* Dodger blue for title */
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        label, p {
+            color: #4682b4; /* Steel blue for text */
+            font-size: 1.2em;
+        }
+
+        input[type="datetime-local"] {
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 16px;
+            border: 1px solid #f0f8ff;
+            border-radius: 5px;
+background: linear-gradient(145deg, #d8dfe6, #ffffff);
+box-shadow:  10px 10px 20px #ccd3d9,
+             -10px -10px 20px #ffffff;
+            
+        }
+
+        input[type="datetime-local"]:hover {
+            border-color: #4682b4; /* Change border color on hover */
+        }
+
+        button {
+            padding: 12px 24px;
+            background-color: #1e90ff; /* Sky blue button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #4682b4; /* Darker blue on hover */
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #1e90ff;
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        #totalLiveTimeTable {
+            width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        #totalLiveTimeTable th, #totalLiveTimeTable td {
+            border: none;
+            padding: 12px;
+            text-align: left;
+        }
+
+        #totalLiveTimeTable th {
+            background-color: #1e90ff;
+            color: white;
+            font-weight: 600;
+            flex-direction: row;
+        }
+
+        #totalLiveTimeTable td {
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #eee;
+            font-family: "Roboto", sans-serif;
+        }
+
+        #totalLiveTimeTable tr:nth-child(even) td {
+            background-color: #e6f7ff;
+        }
+
+        #shareBtn {
+            padding: 10px 20px;
+            background-color: #25d366;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 20px;
+            width: fit-content;
+        }
+
+        .center-items {
+            width: 100%;
+            text-align: center;
+        }
+
+        #shareBtn:hover {
+            background-color: #128c7e; /* Darker green on hover */
+        }
+
+        
+
+        #shareBtn:disabled {
+            background-color: #ccc; /* Grey color for disabled state */
+            cursor: not-allowed; /* Change cursor to not-allowed */
+        }
+
+        #shareText {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #1e90ff;
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            color: #333;
+            display: none; /* Hidden by default */
+        }
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+  }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+        #languageDropdown {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px;
+            font-size: 16px;
+            border: 2px solid #1e90ff;
+            border-radius: 5px;
+            background-color: #ffffff;
+            color: #1e90ff;
+            transition: border-color 0.3s;
+        }
+        /* Style for the COPY button */
+        #copyBtn {
+        margin-top: 10px;
+        padding: 8px 16px;
+        background-color: #1e90ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        }
+
+        #copyBtn:hover {
+        background-color: #4682b4;
+    }
+    
+    /* Cascading wave animation */
+@keyframes cascade-wave {
+    0% { transform: scale(1); }
+    20% { transform: scale(1.08); }
+    40% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+/* Age cards cascade */
+#ageDisplayContainer .time-box:nth-child(1) {
+    animation: cascade-wave 3s infinite;
+}
+
+#ageDisplayContainer .time-box:nth-child(2) {
+    animation: cascade-wave 3s infinite 0.5s;
+}
+
+#ageDisplayContainer .time-box:nth-child(3) {
+    animation: cascade-wave 3s infinite 1s;
+}
+
+#ageDisplayContainer .time-box:nth-child(4) {
+    animation: cascade-wave 3s infinite 1.5s;
+}
+
+#ageDisplayContainer .time-box:nth-child(5) {
+    animation: cascade-wave 3s infinite 2s;
+}
+
+#ageDisplayContainer .time-box:nth-child(6) {
+    animation: cascade-wave 3s infinite 2.5s;
+}
+
+/* Next birthday cards cascade */
+#nextBirthdayContainer .time-box:nth-child(1) {
+    animation: cascade-wave 3s infinite;
+}
+
+#nextBirthdayContainer .time-box:nth-child(2) {
+    animation: cascade-wave 3s infinite 0.5s;
+}
+
+#nextBirthdayContainer .time-box:nth-child(3) {
+    animation: cascade-wave 3s infinite 1s;
+}
+
+#nextBirthdayContainer .time-box:nth-child(4) {
+    animation: cascade-wave 3s infinite 1.5s;
+}
+
+#nextBirthdayContainer .time-box:nth-child(5) {
+    animation: cascade-wave 3s infinite 2s;
+}
+
+/* Smooth scaling */
+.time-box {
+    border: 1px solid #f0f8ff;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #d8dfe6, #ffffff);
+    box-shadow: 10px 10px 24px #a8aeb3, -10px -10px 24px #ffffff;
+    transform-origin: center;
+}
+        .time-box:hover {
+            
+        }
+        #containerBefore1:hover {
+            border: 2px solid red;
+        }
+        .error-message {
+    color: #ff4757;
+    font-size: 14px;
+    margin-top: 8px;
+    display: none;
+}
+    </style>
+</head>
+<body>
+
+    <!-- Language Dropdown -->
+    <div style="padding: 20px; border: 1px solid #f0f8ff; border-radius: 32px;
+background: linear-gradient(225deg, #d8dfe6, #ffffff);
+box-shadow:  -11px 11px 24px #c7ced4,
+             11px -11px 24px #ffffff; animation: fadeIn 1s ease-in-out;">
+    <select id="languageDropdown">
+        <option value="en">English</option>
+        <option value="bn">Bengali</option>
+    </select>
+
+    <h1 id="title"style="margin-top: 20px;">Live Age Calculator</h1>
+    <label for="dob" id="dobLabel">Select your Date and Time of Birth:</label>
+    </br>
+    <input type="datetime-local" id="dob">
+    <p id="dateError" class="error-message">Please select a date and time that is not in the future.</p>
+    <!-- Age Display Section -->
+    <div style="margin-top: 20px; padding: 15px; border: 1px solid #f0f8ff;border-radius: 15px;
+background: linear-gradient(315deg, #cacaca, #f0f8ff);
+box-shadow:  -8px -8px 11px #c5c5c5,
+             8px 8px 11px #fbfbfb;" class="hidden" id="containerBefore"> <span id="resultTitle">PLEASE SELECT YOUR DATE AND TIME OF BIRTH</span></div>
+        <div id="ageDisplayContainer" class="hidden"style="margin-top:30px;"><b id="ageTitle">YOUR AGE</b>
+             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 text-center">
+                <div class="time-box p-4 rounded-lg">
+    <span id="years" class="block text-4xl font-bold text-purple-300">0</span>
+    <span id="yearsLabel" class="text-sm text-gray-400 time-label">Years</span> <!-- Added ID -->
+</div>
+<div class="time-box p-4 rounded-lg">
+    <span id="months" class="block text-4xl font-bold text-purple-300">0</span>
+    <span id="monthsLabel" class="text-sm text-gray-400 time-label">Months</span> <!-- Added ID -->
+</div>
+<div class="time-box p-4 rounded-lg">
+    <span id="days" class="block text-4xl font-bold text-purple-300">0</span>
+    <span id="daysLabel" class="text-sm text-gray-400 time-label">Days</span> <!-- Added ID -->
+</div>
+<div class="time-box p-4 rounded-lg">
+    <span id="hours" class="block text-4xl font-bold text-purple-300">0</span>
+    <span id="hoursLabel" class="text-sm text-gray-400 time-label">Hours</span> <!-- Added ID -->
+</div>
+<div class="time-box p-4 rounded-lg">
+    <span id="minutes" class="block text-4xl font-bold text-purple-300">0</span>
+    <span id="minutesLabel" class="text-sm text-gray-400 time-label">Minutes</span> <!-- Added ID -->
+</div>
+<div class="time-box p-4 rounded-lg">
+    <span id="seconds" class="block text-4xl font-bold text-purple-300">0</span>
+    <span id="secondsLabel" class="text-sm text-gray-400 time-label">Seconds</span> <!-- Added ID -->
+</div>
+                 
+            </div>
+        </div>
+    
+    <table id="totalLiveTimeTable">
+        <tr>
+            <th id="totalYearsLabel">Total Years</th>
+            <td id="totalYears"></td>
+        </tr>
+        <tr>
+            <th id="totalMonthsLabel">Total Months</th>
+            <td id="totalMonths"></td>
+        </tr>
+        <tr>
+            <th id="totalWeeksLabel">Total Weeks</th>
+            <td id="totalWeeks"></td>
+        </tr>
+        <tr>
+            <th id="totalDaysLabel">Total Days</th>
+            <td id="totalDays"></td>
+        </tr>
+        <tr>
+            <th id="totalHoursLabel">Total Hours</th>
+            <td id="totalHours"></td>
+        </tr>
+        <tr>
+            <th id="totalMinutesLabel">Total Minutes</th>
+            <td id="totalMinutes"></td>
+        </tr>
+        <tr>
+            <th id="totalSecondsLabel">Total Seconds</th>
+            <td id="totalSeconds"></td>
+        </tr>
+    </table>
+    
+    <!-- Next birthday container-->
+    <div style="margin-top: 20px; padding: 15px; border: 1px solid #f0f8ff;border-radius: 15px;
+background: linear-gradient(315deg, #cacaca, #f0f8ff);
+box-shadow:  -8px -8px 11px #c5c5c5,
+             8px 8px 11px #fbfbfb;" class="hidden" id="containerBefore1"> <span id="nextBirthdayPlaceholder">PLEASE SELECT YOUR DATE AND TIME OF BIRTH</span></div>
+    <div id="nextBirthdayContainer" class="hidden" style="margin-top:30px;">
+    <b id="nextBirthdayTitle">NEXT BIRTHDAY IN</b>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 text-center">
+        <div class="time-box p-4 rounded-lg">
+    <span id="nextMonths" class="block text-4xl font-bold text-purple-300">0</span>
+    <span id="nextMonthsLabel" class="text-sm text-gray-400 time-label">Months</span> <!-- Added ID -->
+</div>
+<div class="time-box p-4 rounded-lg">
+    <span id="nextDays" class="block text-4xl font-bold text-purple-300">0</span>
+    <span id="nextDaysLabel" class="text-sm text-gray-400 time-label">Days</span> <!-- Added ID -->
+</div>
+<div class="time-box p-4 rounded-lg">
+    <span id="nextHours" class="block text-4xl font-bold text-purple-300">0</span>
+    <span id="nextHoursLabel" class="text-sm text-gray-400 time-label">Hours</span> <!-- Added ID -->
+</div>
+<div class="time-box p-4 rounded-lg">
+    <span id="nextMinutes" class="block text-4xl font-bold text-purple-300">0</span>
+    <span id="nextMinutesLabel" class="text-sm text-gray-400 time-label">Minutes</span> <!-- Added ID -->
+</div>
+<div class="time-box p-4 rounded-lg">
+    <span id="nextSeconds" class="block text-4xl font-bold text-purple-300">0</span>
+    <span id="nextSecondsLabel" class="text-sm text-gray-400 time-label">Seconds</span> <!-- Added ID -->
+</div>
+    </div>
+</div>
+
+    <div class="center-items">
+        <button id="shareBtn">Share Age</button>
+    </div>
+
+    <!-- Offline Share Text Display -->
+<div id="shareText">
+    <button id="copyBtn">COPY</button>
+</div>
+</div>
+    <script>
+        // Language translations
+        const translations = {
+            en: {
+                title: "Live Age Calculator",
+                dobLabel: "Select your Date and Time of Birth:",
+                resultPlaceholder: "Please Enter Your Date And Time Of Birth.",
+                totalYearsLabel: "Total Years",
+                totalMonthsLabel: "Total Months",
+                totalWeeksLabel: "Total Weeks",
+                totalDaysLabel: "Total Days",
+                totalHoursLabel: "Total Hours",
+                totalMinutesLabel: "Total Minutes",
+                totalSecondsLabel: "Total Seconds",
+                nextBirthdayPlaceholder: "Please Enter Your Date And Time Of Birth.",
+                shareBtn: "Share Age",
+                shareText: "Hello!\nI just discovered an awesome app that calculates your exact age in years, months, hours, minutes, and even seconds in REAL TIME!\n\nMy age is ${ageResult}.\n\nMy next birthday is in ${nextBirth}.\n\nCheck out this cool app to calculate your exact age: https://www.example.com",
+                timeSinceDOB: "YOUR AGE",
+                nextBirthdayIn: "NEXT BIRTHDAY",
+                timeUnits: {
+                    years: "years",
+                    months: "months",
+                    days: "days",
+                    hours: "hours",
+                    minutes: "minutes",
+                    seconds: "seconds",
+                },
+            },
+            bn: {
+                title: "লাইভ বয়স ক্যালকুলেটর",
+                dobLabel: "আপনার জন্ম তারিখ এবং সময় নির্বাচন করুন:",
+                resultPlaceholder: "আপনার জন্ম তারিখ এবং সময় নির্বাচন করুন।",
+                totalYearsLabel: "মোট বছর",
+                totalMonthsLabel: "মোট মাস",
+                totalWeeksLabel: "মোট সপ্তাহ",
+                totalDaysLabel: "মোট দিন",
+                totalHoursLabel: "মোট ঘন্টা",
+                totalMinutesLabel: "মোট মিনিট",
+                totalSecondsLabel: "মোট সেকেন্ড",
+                nextBirthdayPlaceholder: "আপনার জন্ম তারিখ এবং সময় নির্বাচন করুন।",
+                shareBtn: "বয়স শেয়ার করুন",
+                shareText: "হ্যালো!\nআমি একটা অসাধারণ অ্যাপ খুঁজে পেয়েছি যা চলতি সময়ে বছর, মাস, ঘন্টা, মিনিট এমনকি সেকেন্ডেও আপনার সঠিক বয়স গণনা করে!\n\nআমার বয়স ${ageResult}।\n\nআমার পরবর্তী জন্মদিন ${nextBirth} এ।\nআপনার সঠিক বয়স গণনা করার জন্য এই দুর্দান্ত অ্যাপটি দেখুন: https://www.example.com",
+                timeSinceDOB: "আপনার বয়স",
+                nextBirthdayIn: "পরবর্তী জন্মদিন",
+                timeUnits: {
+                    years: "বছর",
+                    months: "মাস",
+                    days: "দিন",
+                    hours: "ঘন্টা",
+                    minutes: "মিনিট",
+                    seconds: "সেকেন্ড",
+                },
+            },
+        };
+
+        // Function to update the language
+        function updateLanguage(lang) {
+            
+// In updateLanguage() function, replace the label update code with:
+const timeUnits = translations[lang].timeUnits;
+const labels = document.querySelectorAll('.time-label');
+    
+if (labels.length >= 12) { // 6 for age + 6 for next birthday
+    // Update age card labels
+    labels[0].textContent = timeUnits.years;
+    labels[1].textContent = timeUnits.months;
+    labels[2].textContent = timeUnits.days;
+    labels[3].textContent = timeUnits.hours;
+    labels[4].textContent = timeUnits.minutes;
+    labels[5].textContent = timeUnits.seconds;
+    
+    // Update next birthday card labels  
+    labels[6].textContent = timeUnits.months;
+    labels[7].textContent = timeUnits.days;
+    labels[8].textContent = timeUnits.hours;
+    labels[9].textContent = timeUnits.minutes;
+    labels[10].textContent = timeUnits.seconds;
+}
+
+
+            document.getElementById("title").textContent = translations[lang].title;
+            document.getElementById("dobLabel").textContent = translations[lang].dobLabel;
+            document.getElementById("totalYearsLabel").textContent = translations[lang].totalYearsLabel;
+            document.getElementById("totalMonthsLabel").textContent = translations[lang].totalMonthsLabel;
+            document.getElementById("totalWeeksLabel").textContent = translations[lang].totalWeeksLabel;
+            document.getElementById("totalDaysLabel").textContent = translations[lang].totalDaysLabel;
+            document.getElementById("totalHoursLabel").textContent = translations[lang].totalHoursLabel;
+            document.getElementById("totalMinutesLabel").textContent = translations[lang].totalMinutesLabel;
+            document.getElementById("totalSecondsLabel").textContent = translations[lang].totalSecondsLabel;
+            document.getElementById("shareBtn").textContent = translations[lang].shareBtn;
+
+ // Update the time unit labels in the age display
+    document.getElementById("yearsLabel").textContent = translations[lang].timeUnits.years;
+    document.getElementById("monthsLabel").textContent = translations[lang].timeUnits.months;
+    document.getElementById("daysLabel").textContent = translations[lang].timeUnits.days;
+    document.getElementById("hoursLabel").textContent = translations[lang].timeUnits.hours;
+    document.getElementById("minutesLabel").textContent = translations[lang].timeUnits.minutes;
+    document.getElementById("secondsLabel").textContent = translations[lang].timeUnits.seconds;
+    
+    // Update the time unit labels in the next birthday display
+    document.getElementById("nextMonthsLabel").textContent = translations[lang].timeUnits.months;
+    document.getElementById("nextDaysLabel").textContent = translations[lang].timeUnits.days;
+    document.getElementById("nextHoursLabel").textContent = translations[lang].timeUnits.hours;
+    document.getElementById("nextMinutesLabel").textContent = translations[lang].timeUnits.minutes;
+    document.getElementById("nextSecondsLabel").textContent = translations[lang].timeUnits.seconds;
+    
+document.getElementById("resultTitle").textContent = translations[lang].resultPlaceholder;
+
+document.getElementById("nextBirthdayPlaceholder").textContent = translations[lang].nextBirthdayPlaceholder;
+
+            // Update result placeholder if no DOB is entered
+            if (!document.getElementById("dob").value) {
+                    
+                
+            }
+        }
+
+        // Add event listener to the language dropdown
+        document.getElementById("languageDropdown").addEventListener("change", function () {
+            const selectedLang = this.value;
+            updateLanguage(selectedLang);
+            
+   
+        });
+
+        // Initialize with English
+        updateLanguage("en");
+
+        // Rest of your existing JavaScript code...
+        var ageResult = ''; // Global variable to hold the age result
+        var nextBirth = ''; // Global variable to hold the next birthday countdown
+
+        function calculateAge() {
+    var dobInput = document.getElementById('dob').value;
+    var ageContainer = document.getElementById('ageDisplayContainer');
+    var containerBefore = document.getElementById('containerBefore')
+    
+    if (!dobInput) {
+        // HIDE the cards when no DOB is selected
+        ageContainer.classList.add('hidden');
+        containerBefore.classList.remove('hidden');
+        return;
+    }
+    
+    // SHOW the cards instantly when DOB is selected
+    ageContainer.classList.remove('hidden');
+    containerBefore.classList.add('hidden');
+
+    var dob = new Date(dobInput);
+    var now = new Date();
+    
+    // Calculate total difference in milliseconds
+    var diff = now - dob;
+    
+    // Calculate years
+    var years = now.getFullYear() - dob.getFullYear();
+    
+    // Check if birthday hasn't occurred yet this year
+    var currentMonth = now.getMonth();
+    var birthMonth = dob.getMonth();
+    
+    if (currentMonth < birthMonth || 
+        (currentMonth === birthMonth && now.getDate() < dob.getDate())) {
+        years--;
+    }
+    
+    // Calculate months
+    var months = now.getMonth() - dob.getMonth();
+    if (months < 0) {
+        months += 12;
+    }
+    
+    // Calculate days
+    var lastDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    var days = now.getDate() - dob.getDate();
+    if (days < 0) {
+        months--;
+        days += lastDayOfMonth;
+        if (months < 0) {
+            months += 12;
+            years--;
+        }
+    }
+    
+    // Calculate hours, minutes, seconds
+    var hours = now.getHours() - dob.getHours();
+    if (hours < 0) {
+        days--;
+        hours += 24;
+        if (days < 0) {
+            months--;
+            days += lastDayOfMonth;
+            if (months < 0) {
+                months += 12;
+                years--;
+            }
+        }
+    }
+    
+    var minutes = now.getMinutes() - dob.getMinutes();
+    if (minutes < 0) {
+        hours--;
+        minutes += 60;
+        if (hours < 0) {
+            days--;
+            hours += 24;
+            if (days < 0) {
+                months--;
+                days += lastDayOfMonth;
+                if (months < 0) {
+                    months += 12;
+                    years--;
+                }
+            }
+        }
+    }
+    
+    var seconds = now.getSeconds() - dob.getSeconds();
+    if (seconds < 0) {
+        minutes--;
+        seconds += 60;
+        if (minutes < 0) {
+            hours--;
+            minutes += 60;
+            if (hours < 0) {
+                days--;
+                hours += 24;
+                if (days < 0) {
+                    months--;
+                    days += lastDayOfMonth;
+                    if (months < 0) {
+                        months += 12;
+                        years--;
+                    }
+                }
+            }
+        }
+    }
+
+    // Ensure no negative values
+    years = Math.max(0, years);
+    months = Math.max(0, months);
+    days = Math.max(0, days);
+    hours = Math.max(0, hours);
+    minutes = Math.max(0, minutes);
+    seconds = Math.max(0, seconds);
+
+    // Get the selected language
+    const lang = document.getElementById("languageDropdown").value;
+    const timeUnits = translations[lang].timeUnits;
+    
+    // Update the card display
+    document.getElementById('years').textContent = years;
+    document.getElementById('months').textContent = months;
+    document.getElementById('days').textContent = days;
+    document.getElementById('hours').textContent = hours;
+    document.getElementById('minutes').textContent = minutes;
+    document.getElementById('seconds').textContent = seconds;
+
+    // Keep this for the share functionality
+    ageResult = `${years} ${timeUnits.years}, ${months} ${timeUnits.months}, ${days} ${timeUnits.days}, ${hours} ${timeUnits.hours}, ${minutes} ${timeUnits.minutes}, ${seconds} ${timeUnits.seconds}`;
+}
+
+        // Function to calculate total live time in floating-point numbers and update the table
+        function calculateTotalLiveTime() {
+            var dobInput = document.getElementById('dob').value;
+            if (!dobInput) {
+                // Clear the table if the date of birth is not entered
+                document.getElementById('totalYears').textContent = '';
+                document.getElementById('totalMonths').textContent = '';
+                document.getElementById('totalWeeks').textContent = '';
+                document.getElementById('totalDays').textContent = '';
+                document.getElementById('totalHours').textContent = '';
+                document.getElementById('totalMinutes').textContent = '';
+                document.getElementById('totalSeconds').textContent = '';
+                return;
+            }
+
+            var dob = new Date(dobInput);
+            var now = new Date(); // Use the current time
+
+            var totalMilliseconds = now - dob;
+            var totalSeconds = totalMilliseconds / 1000;
+            var totalMinutes = totalSeconds / 60;
+            var totalHours = totalMinutes / 60;
+            var totalDays = totalHours / 24;
+            var totalWeeks = totalDays / 7;
+            var totalMonths = (totalDays / 30.44); // Approximate average month length
+            var totalYears = totalMonths / 12;
+
+            // Correct the total months calculation by adding the full years converted to months
+            totalMonths = (totalYears * 12) + (totalMonths % 12);
+
+            // Update table cells with floating-point numbers
+            document.getElementById('totalYears').textContent = totalYears.toFixed(6);
+            document.getElementById('totalMonths').textContent = totalMonths.toFixed(6);
+            document.getElementById('totalWeeks').textContent = totalWeeks.toFixed(6);
+            document.getElementById('totalDays').textContent = totalDays.toFixed(6);
+            document.getElementById('totalHours').textContent = totalHours.toFixed(6);
+            document.getElementById('totalMinutes').textContent = totalMinutes.toFixed(6);
+            document.getElementById('totalSeconds').textContent = totalSeconds.toFixed(6);
+        }
+
+        // Update the calculation every second
+        setInterval(function() {
+            calculateAge();
+            calculateTotalLiveTime();
+        }, 1);
+
+        // Function to calculate the next birthday countdown
+        function calculateNextBirthday() {
+    var dobInput = document.getElementById('dob').value;
+    var nextContainer = document.getElementById('nextBirthdayContainer');
+    var containerBefore1 = document.getElementById('containerBefore1');
+    
+    if (!dobInput) {
+        nextContainer.classList.add('hidden');
+        containerBefore1.classList.remove('hidden');
+        return;
+    }
+    
+    nextContainer.classList.remove('hidden');
+    containerBefore1.classList.add('hidden');
+    
+    var dob = new Date(dobInput);
+            var now = new Date();
+
+            // Set next birthday to this year (if already passed, use next year)
+            var nextBirthday = new Date(dob);
+            nextBirthday.setFullYear(now.getFullYear());
+
+            if (now > nextBirthday) {
+                nextBirthday.setFullYear(now.getFullYear() + 1); // Set to next year
+            }
+
+            var diff = nextBirthday - now; // Time difference in milliseconds
+            var months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30.44)); // Approximate months
+            var days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); // Added minutes
+            var seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    // Update the card display
+    document.getElementById('nextMonths').textContent = months;
+    document.getElementById('nextDays').textContent = days;
+    document.getElementById('nextHours').textContent = hours;
+    document.getElementById('nextMinutes').textContent = minutes;
+    document.getElementById('nextSeconds').textContent = seconds;
+
+    // Get the selected language
+    const lang = document.getElementById("languageDropdown").value;
+    const timeUnits = translations[lang].timeUnits;
+    
+    // Keep for sharing functionality
+    nextBirth = `${months} ${timeUnits.months}, ${days} ${timeUnits.days}, ${hours} ${timeUnits.hours}, ${minutes} ${timeUnits.minutes}, ${seconds} ${timeUnits.seconds}`;
+    
+    // Update title
+    document.getElementById('nextBirthdayTitle').textContent = translations[lang].nextBirthdayIn;    
+    document.getElementById('ageTitle').textContent = translations[lang].timeSinceDOB;
+}
+
+        // Update the calculations every second (for next birthday and age)
+        setInterval(function() {
+            calculateNextBirthday();  // Update next birthday countdown every second
+        }, 1);
+
+// Set max attribute to current datetime
+function setMaxDateTime() {
+    const now = new Date();
+    // Format to YYYY-MM-DDTHH:MM (datetime-local format)
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    
+    const maxDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+    document.getElementById('dob').setAttribute('max', maxDateTime);
+}
+
+// Validate date is not in the future
+function validateDateTime() {
+    const dobInput = document.getElementById('dob');
+    const errorMessage = document.getElementById('dateError');
+    const selectedDate = new Date(dobInput.value);
+    const now = new Date();
+    
+    if (selectedDate > now) {
+        errorMessage.style.display = 'block';
+        dobInput.value = ''; // Clear the invalid value
+        // Hide any visible age displays
+        document.getElementById('ageDisplayContainer').classList.add('hidden');
+        document.getElementById('containerBefore').classList.remove('hidden');
+        document.getElementById('nextBirthdayContainer').classList.add('hidden');
+        document.getElementById('containerBefore1').classList.remove('hidden');
+        return false;
+    } else {
+        errorMessage.style.display = 'none';
+        return true;
+    }
+}
+
+    
+
+        // Function to share age result using Web Share API or fallback
+        function shareAge() {
+            if (!ageResult) {
+                alert(translations[document.getElementById("languageDropdown").value].resultPlaceholder);
+                return;
+            }
+
+            // Use the extracted countdown part
+            const shareData = {
+                title: translations[document.getElementById("languageDropdown").value].title,
+                text: translations[document.getElementById("languageDropdown").value].shareText
+                    .replace("${ageResult}", ageResult)
+                    .replace("${nextBirth}", nextBirth), // Use the extracted countdown
+            };
+
+            if (navigator.share) {
+                // Use Web Share API if available
+                navigator.share(shareData)
+                    .then(() => console.log('Shared successfully'))
+                    .catch((error) => console.log('Sharing failed', error));
+            } else {
+                // Fallback: Display the text for manual sharing
+                var shareTextDiv = document.getElementById('shareText');
+                shareTextDiv.textContent = shareData.text;
+                shareTextDiv.style.display = 'block'; // Make the div visible
+            }
+        }
+
+        // Add event listener to the share button
+        document.getElementById('shareBtn').addEventListener('click', shareAge);
+
+        // Function to enable or disable the share button based on DOB input
+        function toggleShareButton() {
+            var dobInput = document.getElementById('dob').value;
+            var shareBtn = document.getElementById('shareBtn');
+
+            if (dobInput) {
+                shareBtn.disabled = false; // Enable share button
+            } else {
+                shareBtn.disabled = true; // Disable share button
+            }
+        }
+
+        // Add event listener to the DOB input to check changes
+        document.getElementById('dob').addEventListener('input', toggleShareButton);
+
+        // Initialize the share button state on page load
+        window.onload = function() {
+            toggleShareButton();
+            setMaxDateTime();
+    document.getElementById('dob').addEventListener('change', validateDateTime);
+     document.getElementById('dob').addEventListener('input', function() {
+        document.getElementById('dateError').style.display = 'none';
+    });
+    // Initialize the new card display with zeros
+    
+    // Add this to window.onload
+document.getElementById('nextBirthdayContainer').classList.add('hidden');
+document.getElementById('nextMonths').textContent = 0;
+document.getElementById('nextDays').textContent = 0;
+document.getElementById('nextHours').textContent = 0;
+document.getElementById('nextMinutes').textContent = 0;
+document.getElementById('nextSeconds').textContent = 0;
+    document.getElementById('years').textContent = 0;
+    document.getElementById('months').textContent = 0;
+    document.getElementById('days').textContent = 0;
+    document.getElementById('hours').textContent = 0;
+    document.getElementById('minutes').textContent = 0;
+    document.getElementById('seconds').textContent = 0;
+}
+        
+        // Function to copy the share text to clipboard
+function copyToClipboard() {
+    const shareText = document.getElementById('shareText').textContent.replace('COPY', '').trim();
+    navigator.clipboard.writeText(shareText)
+        .then(() => {
+            alert('Text copied to clipboard!');
+        })
+        .catch(() => {
+            alert('Failed to copy text. Please try again.');
+        });
+}
+
+// Add event listener to the COPY button
+document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
+    </script>
+</body>
+</html>
